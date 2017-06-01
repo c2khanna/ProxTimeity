@@ -15,6 +15,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
-        app:srcCompat="@mipmap/ic_add_white_24dp"
+        android:src="@mipmap/ic_add_white_24dp"
+        android:onClick="goToChooseType"
         />
 </RelativeLayout>
