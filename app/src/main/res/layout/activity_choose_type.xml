@@ -1,17 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.uwaterloo.proxtimeity.ChooseTypeActivity">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="vertical"
+        android:paddingLeft="4.0dip"
+        android:paddingTop="5.0dip"
+        android:paddingRight="4.0dip"
+        android:paddingBottom="1.0dip"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        tools:layout_editor_absoluteX="166dp"
-        tools:layout_editor_absoluteY="232dp" />
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Set a Reminder Based on:"/>
 
-</android.support.constraint.ConstraintLayout>
+
+        <Button
+            android:id="@+id/Button02"
+            android:layout_width="match_parent"
+            android:layout_height="75dip"
+            android:text="Location"
+            android:layout_marginBottom="15dip"
+            android:textSize="20sp"
+            />
+        <Button
+            android:id="@+id/Button03"
+            android:layout_width="match_parent"
+            android:layout_height="75dip"
+            android:text="Time"
+            android:layout_marginTop="15dip"
+            android:textSize="20sp"
+            />
+
+    </LinearLayout>
+
+</RelativeLayout>
