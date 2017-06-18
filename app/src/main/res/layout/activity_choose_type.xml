@@ -29,6 +29,7 @@
             android:text="Location"
             android:layout_marginBottom="15dip"
             android:textSize="20sp"
+            android:onClick="goToLocationActivity"
             />
         <Button
             android:id="@+id/Button03"
@@ -37,6 +38,7 @@
             android:text="Time"
             android:layout_marginTop="15dip"
             android:textSize="20sp"
+            android:onClick="goToTimeActivity"
             />
 
     </LinearLayout>
