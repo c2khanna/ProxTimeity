@@ -5,9 +5,10 @@
 
     <ImageView
         android:id="@+id/reminder_image"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_margin="16dp"/>
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_clock"/>
 
     <TextView
         android:id="@+id/reminder_name"
