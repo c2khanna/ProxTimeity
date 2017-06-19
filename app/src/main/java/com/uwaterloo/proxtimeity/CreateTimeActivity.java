@@ -23,6 +23,7 @@ public class CreateTimeActivity extends AppCompatActivity
         setContentView(R.layout.activity_create_time);
     }
 
+
     public void datePicker(View view){
         DatePickerFragment fragment = new DatePickerFragment();
         fragment.show(getSupportFragmentManager(),"date");
@@ -32,7 +33,6 @@ public class CreateTimeActivity extends AppCompatActivity
         TimePickerFragment newFragment = new TimePickerFragment();
         newFragment.show(getSupportFragmentManager(), "time");
     }
-
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day) {
@@ -49,6 +49,10 @@ public class CreateTimeActivity extends AppCompatActivity
                 .setText(DateFormat.format(template, cal.getTime()));
     }
 
+    public void saveTimeReminder(View view) {
+
+    }
+
 
     public static class DatePickerFragment extends DialogFragment {
 
@@ -63,11 +67,9 @@ public class CreateTimeActivity extends AppCompatActivity
                     (DatePickerDialog.OnDateSetListener)
                             getActivity(), year, month, day);
         }
-
     }
 
     public static class TimePickerFragment extends DialogFragment {
-
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
 
@@ -79,7 +81,5 @@ public class CreateTimeActivity extends AppCompatActivity
                     getActivity(), hour, minute,
                     false);
         }
-
-
     }
 }

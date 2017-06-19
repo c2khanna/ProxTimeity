@@ -64,7 +64,6 @@
             android:text="default time value"
             android:layout_width="348dp"
             android:layout_height="16dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="16dp" />
@@ -72,7 +71,7 @@
         <Button
             android:id="@+id/selectTimeBtn"
             android:layout_below="@id/timeSelected"
-            android:layout_width="346dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="timePicker"
             android:text="Choose a Time"
@@ -93,7 +92,7 @@
         <Button
             android:id="@+id/selectDateBtn"
             android:layout_below="@+id/dateSelected"
-            android:layout_width="349dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="datePicker"
             android:text="Choose a Date"
