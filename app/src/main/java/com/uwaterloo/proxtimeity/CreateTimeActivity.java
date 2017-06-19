@@ -53,7 +53,6 @@ public class CreateTimeActivity extends AppCompatActivity
 
     }
 
-
     public static class DatePickerFragment extends DialogFragment {
 
         @Override
