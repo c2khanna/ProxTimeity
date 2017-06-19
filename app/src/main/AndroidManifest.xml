@@ -18,7 +18,9 @@
         </activity>
         <activity android:name=".ChooseTypeActivity" />
         <activity android:name=".CreateTimeActivity" />
-        <activity android:name=".CreateLocationActivity"></activity>
+        <activity android:name=".CreateLocationActivity"
+                android:windowSoftInputMode="stateHidden"
+        />
     </application>
 
 </manifest>
