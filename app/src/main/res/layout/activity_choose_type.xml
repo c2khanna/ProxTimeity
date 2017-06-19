@@ -6,6 +6,13 @@
     android:layout_height="match_parent"
     tools:context="com.uwaterloo.proxtimeity.ChooseTypeActivity">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="@string/select_reminder"
+        android:layout_margin="16dp"/>
+
     <LinearLayout
         android:orientation="vertical"
         android:paddingLeft="4.0dip"
@@ -17,16 +24,11 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Set a Reminder Based on:"/>
-
         <Button
             android:id="@+id/Button02"
             android:layout_width="match_parent"
             android:layout_height="75dip"
-            android:text="Location"
+            android:text="@string/location"
             android:layout_marginBottom="15dip"
             android:textSize="20sp"
             android:onClick="goToLocationActivity"
@@ -36,7 +38,7 @@
             android:id="@+id/Button03"
             android:layout_width="match_parent"
             android:layout_height="75dip"
-            android:text="Time"
+            android:text="@string/time"
             android:layout_marginTop="15dip"
             android:textSize="20sp"
             android:onClick="goToTimeActivity"

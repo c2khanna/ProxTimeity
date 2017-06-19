@@ -4,6 +4,9 @@
     <string name="checkbox_string">Remind me only during store hours</string>
     <string name="save_location_reminder">Save</string>
     <string name="remindMeBefore">Remind me before: </string>
+    <string name="location">Location</string>
+    <string name="time">Time</string>
+    <string name="select_reminder">Set a Reminder Based on:</string>
     <string-array name="location_array">
         <item>Walmart Bridgeport</item>
         <item>Venus</item>
