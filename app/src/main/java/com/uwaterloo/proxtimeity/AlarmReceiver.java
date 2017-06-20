@@ -20,21 +20,25 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 public class AlarmReceiver extends BroadcastReceiver {
 
     public void onReceive(Context context, Intent intent) {
-        Notification noti = new Notification();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            noti = new Notification.Builder(context)
-                    .setContentTitle(intent.getStringExtra("reminder type"))
-                    .setContentText(intent.getStringExtra("reminder name"))
-                    .setSmallIcon(R.mipmap.proxtimeity_icon)
-                    .setPriority(Notification.PRIORITY_MAX)
-                    .build();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            NotificationCompat.Builder noti =
+                    new NotificationCompat.Builder(context)
+                            .setContentTitle(intent.getStringExtra("reminder type"))
+                            .setContentText(intent.getStringExtra("reminder name"))
+                            .setDefaults(Notification.DEFAULT_VIBRATE)
+                            .setPriority(Notification.PRIORITY_HIGH);
+
+            if(intent.hasExtra("reminder type") && intent.getStringExtra("reminder type").equals("Location Based Reminder")) {
+                noti.setSmallIcon(R.drawable.ic_location);
+            } else {
+                noti.setSmallIcon(R.drawable.ic_clock);
+            }
+
+            int mNotificationId = 001;
+            NotificationManager mNotifyMgr =
+                    (NotificationManager)context.getSystemService(NOTIFICATION_SERVICE);
+            mNotifyMgr.notify(mNotificationId, noti.build());
         }
-
-        int mNotificationId = 001;
-        NotificationManager mNotifyMgr =
-                (NotificationManager)context.getSystemService(NOTIFICATION_SERVICE);
-        mNotifyMgr.notify(mNotificationId, noti);
-
-        Toast.makeText(context, intent.getStringExtra("reminder name"), Toast.LENGTH_SHORT).show();
     }
 }
