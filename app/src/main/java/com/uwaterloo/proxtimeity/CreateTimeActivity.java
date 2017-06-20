@@ -9,6 +9,7 @@ import android.support.v4.app.DialogFragment;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.TextView;
 import java.util.Calendar;
@@ -16,6 +17,8 @@ import java.util.GregorianCalendar;
 
 public class CreateTimeActivity extends AppCompatActivity
         implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+
+    Calendar reminderDateTime = new GregorianCalendar() ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,24 +38,27 @@ public class CreateTimeActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDateSet(DatePicker view, int year, int month, int day) {
-        Calendar cal = new GregorianCalendar(year, month, day);
+    public void onDateSet(DatePicker view, int year, int month, int date) {
+        reminderDateTime.set(year, month, date);
         final java.text.DateFormat dateFormat = DateFormat.getLongDateFormat(getApplicationContext());
         ((TextView) findViewById(R.id.dateSelected))
-                .setText(dateFormat.format(cal.getTime()));
+                .setText(dateFormat.format(reminderDateTime.getTime()));
     }
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        Calendar cal = new GregorianCalendar(1, 1, 1, hourOfDay, minute);
+        reminderDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        reminderDateTime.set(Calendar.MINUTE, minute);
         String template = "hh:mm aaa";
         ((TextView) findViewById(R.id.timeSelected))
-                .setText(DateFormat.format(template, cal.getTime()));
+                .setText(DateFormat.format(template, reminderDateTime.getTime()));
     }
 
     public void saveTimeReminder(View view) {
+        EditText edit = (EditText)findViewById(R.id.editDescription);
+        String description = edit.getText().toString();
 
+        TimeReminder reminder = new TimeReminder(reminderDateTime, description);
     }
-
 
     public static class DatePickerFragment extends DialogFragment {
 

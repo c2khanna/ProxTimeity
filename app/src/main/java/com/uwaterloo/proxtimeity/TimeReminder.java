@@ -9,4 +9,9 @@ import java.util.GregorianCalendar;
 
 public class TimeReminder extends Reminder {
     Calendar reminderTime = new GregorianCalendar();
+
+    public TimeReminder(Calendar reminder, String description){
+        this.reminderTime = reminder;
+        this.reminderName = description;
+    }
 }
