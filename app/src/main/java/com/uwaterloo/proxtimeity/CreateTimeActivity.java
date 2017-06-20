@@ -51,7 +51,6 @@ public class CreateTimeActivity extends AppCompatActivity
         timeSelectedText.setText(DateFormat.format(template, nowCalendar.getTime()));
     }
 
-
     public void datePicker(View view){
         DatePickerFragment fragment = new DatePickerFragment();
         fragment.show(getSupportFragmentManager(),"date");
@@ -106,10 +105,7 @@ public class CreateTimeActivity extends AppCompatActivity
         // set alarm
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         if(alarmManager != null) {
-//            alarmManager.setAlarm(this.getApplicationContext(), reminder);
-            System.out.println("alarm!!!!");
             long futureInMillis = reminder.reminderTime.getTimeInMillis();
-            Log.d("the time", Long.toString(futureInMillis));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, futureInMillis, pendingIntent);
             } else {
