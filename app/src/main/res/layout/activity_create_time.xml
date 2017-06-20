@@ -1,78 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.uwaterloo.proxtimeity.CreateTimeActivity">
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dip"
+        android:layout_weight="1">
 
-        <EditText
-            android:id="@+id/editDescription"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Reminder Description"
-            android:inputType="textCapSentences"
-            android:layout_marginTop="32dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp" />
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/timeSelected"
-            android:text="default time selected"
-            android:layout_below="@id/editDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="16dp" />
+            <TextView
+                android:id="@+id/time_instructions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="24sp"
+                android:layout_marginTop="32dp"
+                android:text="Create a Time-Based Reminder"
+                android:textColor="#000000"
+                android:gravity="center"/>
 
-        <Button
-            android:id="@+id/selectTimeBtn"
-            android:layout_below="@+id/timeSelected"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="timePicker"
-            android:text="Choose a Time"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="0dp" />
+            <EditText
+                android:id="@+id/time_reminder_description"
+                android:layout_below="@id/time_instructions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="16"
+                android:hint= "What do you want to be reminded about?"
+                android:inputType="textMultiLine"
+                android:layout_marginTop="32dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp" />
 
-        <TextView
-            android:id="@+id/dateSelected"
-            android:text="default data selected"
-            android:layout_below="@id/selectTimeBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="32dp"/>
+            <TextView
+                android:id="@+id/pick_time_instructions"
+                android:layout_marginTop="32dp"
+                android:layout_marginLeft="16dp"
+                android:textColor="#000"
+                android:layout_marginRight="16dp"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/time_reminder_description"
+                android:text="When would you like to be reminded?"/>
 
-        <Button
-            android:id="@+id/selectDateBtn"
-            android:layout_below="@id/dateSelected"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="datePicker"
-            android:text="Choose a Date"
-            android:layout_marginRight="8dp"
-            android:layout_marginLeft="8dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/pick_time_instructions"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/save_button"
-            android:layout_below="@id/selectDateBtn"
-            android:layout_alignParentBottom="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Save"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginLeft="8dp"
-            android:onClick="saveTimeReminder"/>
+                <TextView
+                    android:id="@+id/time_selected"
+                    android:text="Monday June 19, 2017"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_weight="0.75"
+                    android:onClick="datePicker"/>
 
-    </RelativeLayout>
-</ScrollView>
+                <TextView
+                    android:id="@+id/date_selected"
+                    android:text="7:30 PM"
+                    android:layout_width="wrap_content"
+                    android:layout_weight="0.25"
+                    android:textSize="16sp"
+                    android:layout_height="wrap_content"
+                    android:onClick="timePicker"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/save_button"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:text="Save"
+        android:textColor="#fff"
+        android:background="@color/colorPrimary"
+        android:layout_marginBottom="-5dp"
+        android:layout_marginLeft="-5dp"
+        android:layout_marginRight="-5dp"
+        android:onClick="saveTimeReminder"/>
+</LinearLayout>
