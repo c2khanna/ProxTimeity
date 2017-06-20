@@ -8,6 +8,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -108,7 +109,11 @@ public class CreateTimeActivity extends AppCompatActivity
             System.out.println("alarm!!!!");
             long futureInMillis = reminder.reminderTime.getTimeInMillis();
             Log.d("the time", Long.toString(futureInMillis));
-            alarmManager.set(AlarmManager.RTC_WAKEUP, futureInMillis, pendingIntent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, futureInMillis, pendingIntent);
+            } else {
+                alarmManager.set(AlarmManager.RTC_WAKEUP, futureInMillis, pendingIntent);
+            }
         } else {
             Toast.makeText(this.getApplicationContext(), "Alarm is null", Toast.LENGTH_SHORT).show();
         }
