@@ -9,9 +9,10 @@
     <string name="location">Location</string>
     <string name="time">Time</string>
     <string name="create_location_title">Create a Location-Based Reminder</string>
+    <string name="create_time_title">Create a Time-Based Reminder</string>
     <string name="default_date">June 21, 2017</string>
     <string name="default_time">1:50PM</string>
-    <string name="select_reminder">Set a Reminder Based on:</string>
+    <string name="select_reminder">Select Reminder Type:</string>
     <string-array name="location_array">
         <item>Select A Location</item>
         <item>Walmart on Bridgeport</item>
