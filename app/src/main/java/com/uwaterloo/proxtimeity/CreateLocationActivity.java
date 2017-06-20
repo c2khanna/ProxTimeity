@@ -1,7 +1,9 @@
 package com.uwaterloo.proxtimeity;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -101,9 +103,16 @@ public class CreateLocationActivity extends AppCompatActivity
         prefsEditor.putString("allReminders", newJson);
         prefsEditor.apply();
 
+
+        Intent notificationIntent = new Intent(this, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         // set alarm
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         if(alarmManager != null) {
-            alarmManager.setAlarm(this.getApplicationContext(), reminder);
+//            alarmManager.setAlarm(this.getApplicationContext(), reminder);
+            System.out.println("alarm!!!!");
+            long futureInMillis = System.currentTimeMillis() + 3000;
+            alarmManager.set(AlarmManager.RTC_WAKEUP, futureInMillis, pendingIntent);
         } else {
             Toast.makeText(this.getApplicationContext(), "Alarm is null", Toast.LENGTH_SHORT).show();
         }

@@ -26,6 +26,7 @@
             android:windowSoftInputMode="stateHidden"
             android:parentActivityName=".ChooseTypeActivity"
         />
+        <receiver android:name=".AlarmReceiver" />
     </application>
 
 </manifest>
