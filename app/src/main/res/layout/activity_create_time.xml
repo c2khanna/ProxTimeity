@@ -59,8 +59,8 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/time_selected"
-                    android:text="Monday June 19, 2017"
+                    android:id="@+id/date_selected"
+                    android:text="June 21, 2017"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
@@ -68,7 +68,7 @@
                     android:onClick="datePicker"/>
 
                 <TextView
-                    android:id="@+id/date_selected"
+                    android:id="@+id/time_selected"
                     android:text="7:30 PM"
                     android:layout_width="wrap_content"
                     android:layout_weight="0.25"

@@ -3,6 +3,9 @@ package com.uwaterloo.proxtimeity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -12,6 +15,12 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -19,11 +28,21 @@ public class CreateTimeActivity extends AppCompatActivity
         implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     Calendar reminderDateTime = new GregorianCalendar() ;
+    SharedPreferences mPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_time);
+        mPrefs = this.getSharedPreferences("com.uwaterloo.proxtimeity", Context.MODE_PRIVATE);
+
+        TextView dateSelectedText = (TextView)findViewById(R.id.date_selected);
+        TextView timeSelectedText = (TextView)findViewById(R.id.time_selected);
+        Calendar nowCalendar = Calendar.getInstance();
+        final java.text.DateFormat dateFormat = DateFormat.getLongDateFormat(getApplicationContext());
+        dateSelectedText.setText(dateFormat.format(nowCalendar.getTime()));
+        String template = "hh:mm aaa";
+        timeSelectedText.setText(DateFormat.format(template, nowCalendar.getTime()));
     }
 
 
@@ -41,7 +60,7 @@ public class CreateTimeActivity extends AppCompatActivity
     public void onDateSet(DatePicker view, int year, int month, int date) {
         reminderDateTime.set(year, month, date);
         final java.text.DateFormat dateFormat = DateFormat.getLongDateFormat(getApplicationContext());
-        ((TextView) findViewById(R.id.dateSelected))
+        ((TextView) findViewById(R.id.date_selected))
                 .setText(dateFormat.format(reminderDateTime.getTime()));
     }
     @Override
@@ -49,7 +68,7 @@ public class CreateTimeActivity extends AppCompatActivity
         reminderDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
         reminderDateTime.set(Calendar.MINUTE, minute);
         String template = "hh:mm aaa";
-        ((TextView) findViewById(R.id.timeSelected))
+        ((TextView) findViewById(R.id.time_selected))
                 .setText(DateFormat.format(template, reminderDateTime.getTime()));
     }
 
@@ -58,6 +77,23 @@ public class CreateTimeActivity extends AppCompatActivity
         String description = edit.getText().toString();
 
         TimeReminder reminder = new TimeReminder(reminderDateTime, description);
+
+        String json = mPrefs.getString("allReminders", "");
+        Type type = new TypeToken<ArrayList<Reminder>>(){}.getType();
+        Gson gson = new Gson();
+        ArrayList<Reminder> allReminders = gson.fromJson(json, type);
+
+        allReminders.add(reminder);
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        String newJson = gson.toJson(allReminders);
+        prefsEditor.putString("allReminders", newJson);
+        prefsEditor.commit();
+
+        //return to Home screen
+        Intent goToMainScreen = new Intent(this, MainActivity.class);
+        goToMainScreen.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(goToMainScreen);
+        finish();
     }
 
     public static class DatePickerFragment extends DialogFragment {
