@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.ListViewCompat;
 import android.view.View;
 import android.widget.ListView;
 
@@ -34,16 +33,6 @@ public class MainActivity extends AppCompatActivity {
         Type type = new TypeToken<ArrayList<Reminder>>(){}.getType();
         if (gson.fromJson(json, type) != null)
             listOfReminders = gson.fromJson(json, type);
-
-        if (listOfReminders.isEmpty()){
-            listOfReminders.add(new Reminder(0, "Testing"));
-            listOfReminders.add(new Reminder(1, "Testing"));
-            String hardCodedReminder = gson.toJson(listOfReminders);
-            prefsEditor.putString("allReminders", hardCodedReminder);
-            prefsEditor.commit();
-
-        }
-
 
         reminderAdapter = new ReminderArrayAdapter(this, R.layout.item_reminder ,listOfReminders);
         ListView listView = (ListView) findViewById(R.id.listOfReminders);

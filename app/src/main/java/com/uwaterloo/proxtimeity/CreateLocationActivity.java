@@ -39,7 +39,6 @@ public class CreateLocationActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_location);
         mPrefs = this.getSharedPreferences("com.uwaterloo.proxtimeity", Context.MODE_PRIVATE);
-        Spinner locationSpinner = (Spinner) findViewById(R.id.locations_spinner);
 
         // set calendar with current time and set text on create screen
         TextView dateSelectedText = (TextView)findViewById(R.id.dateSelected);
@@ -52,12 +51,12 @@ public class CreateLocationActivity extends AppCompatActivity
     }
 
     public void datePicker(View view){
-        CreateTimeActivity.DatePickerFragment fragment = new CreateTimeActivity.DatePickerFragment();
+        DatePickerFragment fragment = new DatePickerFragment();
         fragment.show(getSupportFragmentManager(),"date");
     }
 
     public void timePicker(View view) {
-        CreateTimeActivity.TimePickerFragment newFragment = new CreateTimeActivity.TimePickerFragment();
+        TimePickerFragment newFragment = new TimePickerFragment();
         newFragment.show(getSupportFragmentManager(), "time");
     }
 

@@ -88,7 +88,7 @@ public class CreateTimeActivity extends AppCompatActivity
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
         String newJson = gson.toJson(allReminders);
         prefsEditor.putString("allReminders", newJson);
-        prefsEditor.commit();
+        prefsEditor.apply();
 
         //return to Home screen
         Intent goToMainScreen = new Intent(this, MainActivity.class);
