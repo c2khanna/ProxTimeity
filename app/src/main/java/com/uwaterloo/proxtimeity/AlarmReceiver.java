@@ -5,6 +5,8 @@ import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -17,14 +19,22 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
-    public static String NOTIFICATION_ID = "notification-id";
-    public static String NOTIFICATION = "notification";
-
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "TRIGGERED!!!");
-        System.out.println("ASDF!@#");
+        Notification noti = new Notification();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            noti = new Notification.Builder(context)
+                    .setContentTitle(intent.getStringExtra("reminder type"))
+                    .setContentText(intent.getStringExtra("reminder name"))
+                    .setSmallIcon(R.mipmap.proxtimeity_icon)
+                    .setPriority(Notification.PRIORITY_MAX)
+                    .build();
+        }
+
+        int mNotificationId = 001;
+        NotificationManager mNotifyMgr =
+                (NotificationManager)context.getSystemService(NOTIFICATION_SERVICE);
+        mNotifyMgr.notify(mNotificationId, noti);
+
         Toast.makeText(context, intent.getStringExtra("reminder name"), Toast.LENGTH_SHORT).show();
-        Log.d("the reminder is", intent.getStringExtra("reminder name"));
-        Log.d("current time is", Long.toString(System.currentTimeMillis()));
     }
 }
