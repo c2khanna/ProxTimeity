@@ -1,6 +1,8 @@
 package com.uwaterloo.proxtimeity;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -10,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -95,12 +98,21 @@ public class CreateTimeActivity extends AppCompatActivity
         prefsEditor.putString("allReminders", newJson);
         prefsEditor.apply();
 
+        Intent notificationIntent = new Intent(this, AlarmReceiver.class);
+        notificationIntent.putExtra("reminder name", reminder.reminderName);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         // set alarm
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         if(alarmManager != null) {
-            alarmManager.setAlarm(this.getApplicationContext(), reminder);
+//            alarmManager.setAlarm(this.getApplicationContext(), reminder);
+            System.out.println("alarm!!!!");
+            long futureInMillis = reminder.reminderTime.getTimeInMillis();
+            Log.d("the time", Long.toString(futureInMillis));
+            alarmManager.set(AlarmManager.RTC_WAKEUP, futureInMillis, pendingIntent);
         } else {
             Toast.makeText(this.getApplicationContext(), "Alarm is null", Toast.LENGTH_SHORT).show();
         }
+
 
         //return to Home screen
         Intent goToMainScreen = new Intent(this, MainActivity.class);
