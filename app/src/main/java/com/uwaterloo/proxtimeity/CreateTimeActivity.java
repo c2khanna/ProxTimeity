@@ -72,6 +72,8 @@ public class CreateTimeActivity extends AppCompatActivity
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         reminderDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
         reminderDateTime.set(Calendar.MINUTE, minute);
+        reminderDateTime.set(Calendar.SECOND, 0);
+        reminderDateTime.set(Calendar.MILLISECOND, 0);
         String template = "hh:mm aaa";
         ((TextView) findViewById(R.id.time_selected))
                 .setText(DateFormat.format(template, reminderDateTime.getTime()));
