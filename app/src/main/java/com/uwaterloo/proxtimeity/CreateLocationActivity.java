@@ -40,6 +40,15 @@ public class CreateLocationActivity extends AppCompatActivity
         setContentView(R.layout.activity_create_location);
         mPrefs = this.getSharedPreferences("com.uwaterloo.proxtimeity", Context.MODE_PRIVATE);
         Spinner locationSpinner = (Spinner) findViewById(R.id.locations_spinner);
+
+        // set calendar with current time and set text on create screen
+        TextView dateSelectedText = (TextView)findViewById(R.id.dateSelected);
+        TextView timeSelectedText = (TextView)findViewById(R.id.timeSelected);
+        Calendar nowCalendar = Calendar.getInstance();
+        final java.text.DateFormat dateFormat = DateFormat.getLongDateFormat(getApplicationContext());
+        dateSelectedText.setText(dateFormat.format(nowCalendar.getTime()));
+        String template = "hh:mm aaa";
+        timeSelectedText.setText(DateFormat.format(template, nowCalendar.getTime()));
     }
 
     public void datePicker(View view){

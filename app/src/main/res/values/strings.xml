@@ -2,19 +2,21 @@
     <string name="app_name">Proxtimeity</string>
     <string name="location_text_prompt">Enter Reminder</string>
     <string name="checkbox_string">Remind me only during store hours</string>
-    <string name="save_location_reminder">Save</string>
+    <string name="save">Save</string>
     <string name="remindMeBefore">Remind me before: </string>
+    <string name="prompt_reminder_description">What do you want to be reminded about?</string>
+    <string name="prompt_reminder_time">When would you like to be reminded?</string>
     <string name="location">Location</string>
     <string name="time">Time</string>
+    <string name="create_location_title">Create a Location-Based Reminder</string>
+    <string name="default_date">June 21, 2017</string>
+    <string name="default_time">1:50PM</string>
     <string name="select_reminder">Set a Reminder Based on:</string>
     <string-array name="location_array">
-        <item>Walmart Bridgeport</item>
-        <item>Venus</item>
-        <item>Earth</item>
-        <item>Mars</item>
-        <item>Jupiter</item>
-        <item>Saturn</item>
-        <item>Uranus</item>
-        <item>Neptune</item>
+        <item>Select A Location</item>
+        <item>Walmart on Bridgeport</item>
+        <item>Sobey\'s Waterloo</item>
+        <item>Staples</item>
+        <item>Home</item>
     </string-array>
 </resources>

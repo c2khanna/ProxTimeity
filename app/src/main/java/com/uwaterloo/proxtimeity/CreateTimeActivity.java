@@ -36,6 +36,7 @@ public class CreateTimeActivity extends AppCompatActivity
         setContentView(R.layout.activity_create_time);
         mPrefs = this.getSharedPreferences("com.uwaterloo.proxtimeity", Context.MODE_PRIVATE);
 
+        // set calendar with current time and set text on create screen
         TextView dateSelectedText = (TextView)findViewById(R.id.date_selected);
         TextView timeSelectedText = (TextView)findViewById(R.id.time_selected);
         Calendar nowCalendar = Calendar.getInstance();

@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="16"
-                android:hint= "What do you want to be reminded about?"
+                android:hint= "@string/prompt_reminder_description"
                 android:inputType="textMultiLine"
                 android:layout_marginTop="32dp"
                 android:layout_marginLeft="16dp"
@@ -47,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/time_reminder_description"
-                android:text="When would you like to be reminded?"/>
+                android:text="@string/prompt_reminder_time"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -60,7 +60,7 @@
 
                 <TextView
                     android:id="@+id/date_selected"
-                    android:text="June 21, 2017"
+                    android:text="@string/default_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
@@ -69,10 +69,12 @@
 
                 <TextView
                     android:id="@+id/time_selected"
-                    android:text="7:30 PM"
+                    android:text="@string/default_time"
                     android:layout_width="wrap_content"
                     android:layout_weight="0.25"
                     android:textSize="16sp"
+                    android:textAlignment="viewEnd"
+                    android:layout_gravity="end"
                     android:layout_height="wrap_content"
                     android:onClick="timePicker"/>
 
@@ -85,8 +87,9 @@
         android:id="@+id/save_button"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:text="Save"
+        android:text="@string/save"
         android:textColor="#fff"
+        android:textSize="20sp"
         android:background="@color/colorPrimary"
         android:layout_marginBottom="-5dp"
         android:layout_marginLeft="-5dp"
