@@ -8,7 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -19,15 +21,13 @@ import java.util.GregorianCalendar;
 public class CreateLocationActivity extends AppCompatActivity
         implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
+    Calendar reminderExpiryDateTime = new GregorianCalendar();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_location);
         Spinner locationSpinner = (Spinner) findViewById(R.id.locations_spinner);
-    }
-
-    public void saveLocationReminder(View view) {
-        return;
     }
 
     public void datePicker(View view){
@@ -42,18 +42,27 @@ public class CreateLocationActivity extends AppCompatActivity
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day) {
-        Calendar cal = new GregorianCalendar(year, month, day);
+        reminderExpiryDateTime.set(year, month, day);
         final java.text.DateFormat dateFormat = DateFormat.getLongDateFormat(getApplicationContext());
         ((TextView) findViewById(R.id.dateSelected))
-                .setText(dateFormat.format(cal.getTime()));
+                .setText(dateFormat.format(reminderExpiryDateTime.getTime()));
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        Calendar cal = new GregorianCalendar(1, 1, 1, hourOfDay, minute);
+        reminderExpiryDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        reminderExpiryDateTime.set(Calendar.MINUTE, minute);
         String template = "hh:mm aaa";
         ((TextView) findViewById(R.id.timeSelected))
-                .setText(DateFormat.format(template, cal.getTime()));
+                .setText(DateFormat.format(template, reminderExpiryDateTime.getTime()));
+    }
+
+    public void saveLocationReminder(View view) {
+        EditText edit = (EditText)findViewById(R.id.editDescription);
+        String description = edit.getText().toString();
+        boolean isChecked = ((CheckBox) findViewById(R.id.check_store_hours)).isChecked();
+
+        LocationReminder reminder = new LocationReminder(description, isChecked, reminderExpiryDateTime);
     }
 
     public static class DatePickerFragment extends DialogFragment {

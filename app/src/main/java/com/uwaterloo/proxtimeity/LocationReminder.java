@@ -12,8 +12,11 @@ public class LocationReminder extends Reminder {
     Boolean remindDuringHours = Boolean.FALSE;
     Calendar remindMeBefore = new GregorianCalendar();
 
-    public LocationReminder(String location, Boolean remindDuringHours) {
+    public LocationReminder(String reminderName, String location,
+                            Boolean remindDuringHours, Calendar remindMeBefore) {
+        this.reminderName = reminderName;
         this.location = location;
         this.remindDuringHours = remindDuringHours;
+        this.remindMeBefore = remindMeBefore;
     }
 }
