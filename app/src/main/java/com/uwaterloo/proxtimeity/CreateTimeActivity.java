@@ -33,15 +33,13 @@ public class CreateTimeActivity extends AppCompatActivity
 
     Calendar reminderDateTime = new GregorianCalendar() ;
     SharedPreferences mPrefs;
-    AlarmManagerBroadcastReceiver alarmManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_time);
         mPrefs = this.getSharedPreferences("com.uwaterloo.proxtimeity", Context.MODE_PRIVATE);
-        alarmManager = new AlarmManagerBroadcastReceiver();
-
+        
         // set calendar with current time and set text on create screen
         TextView dateSelectedText = (TextView)findViewById(R.id.date_selected);
         TextView timeSelectedText = (TextView)findViewById(R.id.time_selected);
