@@ -54,7 +54,7 @@ public class CreateTimeActivity extends AppCompatActivity
     }
 
     public void saveTimeReminder(View view) {
-        EditText edit = (EditText)findViewById(R.id.editDescription);
+        EditText edit = (EditText)findViewById(R.id.time_reminder_description);
         String description = edit.getText().toString();
 
         TimeReminder reminder = new TimeReminder(reminderDateTime, description);

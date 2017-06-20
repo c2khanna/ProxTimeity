@@ -16,12 +16,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ChooseTypeActivity" />
+        <activity android:name=".ChooseTypeActivity"
+            android:parentActivityName=".MainActivity"/>
         <activity android:name=".CreateTimeActivity"
             android:windowSoftInputMode="stateHidden"
+            android:parentActivityName=".ChooseTypeActivity"
         />
         <activity android:name=".CreateLocationActivity"
-                android:windowSoftInputMode="stateHidden"
+            android:windowSoftInputMode="stateHidden"
+            android:parentActivityName=".ChooseTypeActivity"
         />
     </application>
 

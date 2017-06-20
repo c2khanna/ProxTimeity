@@ -18,5 +18,6 @@ public class LocationReminder extends Reminder {
         this.location = location;
         this.remindDuringHours = remindDuringHours;
         this.remindMeBefore = remindMeBefore;
+        this.reminderType = 1;
     }
 }

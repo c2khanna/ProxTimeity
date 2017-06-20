@@ -13,5 +13,6 @@ public class TimeReminder extends Reminder {
     public TimeReminder(Calendar reminder, String description){
         this.reminderTime = reminder;
         this.reminderName = description;
+        this.reminderType = 0;
     }
 }
