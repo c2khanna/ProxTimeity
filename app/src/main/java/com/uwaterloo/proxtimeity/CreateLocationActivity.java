@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -33,12 +34,14 @@ public class CreateLocationActivity extends AppCompatActivity
 
     Calendar reminderExpiryDateTime = new GregorianCalendar();
     SharedPreferences mPrefs;
+    AlarmManagerBroadcastReceiver alarmManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_location);
         mPrefs = this.getSharedPreferences("com.uwaterloo.proxtimeity", Context.MODE_PRIVATE);
+        alarmManager = new AlarmManagerBroadcastReceiver();
 
         // set calendar with current time and set text on create screen
         TextView dateSelectedText = (TextView)findViewById(R.id.dateSelected);
@@ -88,13 +91,22 @@ public class CreateLocationActivity extends AppCompatActivity
         String json = mPrefs.getString("allReminders", "");
         Type type = new TypeToken<ArrayList<Reminder>>(){}.getType();
         Gson gson = new Gson();
-        ArrayList<Reminder> allReminders = gson.fromJson(json, type);
+        ArrayList<Reminder> allReminders = new ArrayList<>();
+        if (gson.fromJson(json, type) != null)
+            allReminders = gson.fromJson(json, type);
 
         allReminders.add(reminder);
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
         String newJson = gson.toJson(allReminders);
         prefsEditor.putString("allReminders", newJson);
         prefsEditor.apply();
+
+        // set alarm
+        if(alarmManager != null) {
+            alarmManager.setAlarm(this.getApplicationContext(), reminder);
+        } else {
+            Toast.makeText(this.getApplicationContext(), "Alarm is null", Toast.LENGTH_SHORT).show();
+        }
 
         //return to Home screen
         Intent goToMainScreen = new Intent(this, MainActivity.class);
