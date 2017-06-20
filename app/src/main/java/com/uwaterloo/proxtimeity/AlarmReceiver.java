@@ -23,7 +23,8 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "TRIGGERED!!!");
         System.out.println("ASDF!@#");
-        Toast.makeText(context, "Alarm Triggered", Toast.LENGTH_SHORT).show();
-
+        Toast.makeText(context, intent.getStringExtra("reminder name"), Toast.LENGTH_SHORT).show();
+        Log.d("the reminder is", intent.getStringExtra("reminder name"));
+        Log.d("current time is", Long.toString(System.currentTimeMillis()));
     }
 }

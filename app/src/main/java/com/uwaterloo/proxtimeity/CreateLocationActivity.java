@@ -75,6 +75,8 @@ public class CreateLocationActivity extends AppCompatActivity
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         reminderExpiryDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
         reminderExpiryDateTime.set(Calendar.MINUTE, minute);
+        reminderExpiryDateTime.set(Calendar.SECOND, 0);
+        reminderExpiryDateTime.set(Calendar.MILLISECOND, 0);
         String template = "hh:mm aaa";
         ((TextView) findViewById(R.id.timeSelected))
                 .setText(DateFormat.format(template, reminderExpiryDateTime.getTime()));
@@ -103,13 +105,15 @@ public class CreateLocationActivity extends AppCompatActivity
 
 
         Intent notificationIntent = new Intent(this, AlarmReceiver.class);
+        notificationIntent.putExtra("reminder name", reminder.reminderName);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         // set alarm
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         if(alarmManager != null) {
 //            alarmManager.setAlarm(this.getApplicationContext(), reminder);
             System.out.println("alarm!!!!");
-            long futureInMillis = System.currentTimeMillis() + 3000;
+            long futureInMillis = reminder.remindMeBefore.getTimeInMillis();
+            Log.d("the time", Long.toString(futureInMillis));
             alarmManager.set(AlarmManager.RTC_WAKEUP, futureInMillis, pendingIntent);
         } else {
             Toast.makeText(this.getApplicationContext(), "Alarm is null", Toast.LENGTH_SHORT).show();
