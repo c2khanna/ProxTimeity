@@ -85,17 +85,17 @@ public class CreateTimeActivity extends AppCompatActivity
 
         TimeReminder reminder = new TimeReminder(reminderDateTime, description);
 
-        String json = mPrefs.getString("allReminders", "");
-        Type type = new TypeToken<ArrayList<Reminder>>(){}.getType();
+        String json = mPrefs.getString("TimeReminders", "");
+        Type type = new TypeToken<ArrayList<TimeReminder>>(){}.getType();
         Gson gson = new Gson();
-        ArrayList<Reminder> allReminders = new ArrayList<>();
+        ArrayList<TimeReminder> timeReminders = new ArrayList<>();
         if (gson.fromJson(json, type) != null)
-            allReminders = gson.fromJson(json, type);
+            timeReminders = gson.fromJson(json, type);
 
-        allReminders.add(reminder);
+        timeReminders.add(reminder);
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
-        String newJson = gson.toJson(allReminders);
-        prefsEditor.putString("allReminders", newJson);
+        String newJson = gson.toJson(timeReminders);
+        prefsEditor.putString("TimeReminders", newJson);
         prefsEditor.apply();
 
         Intent notificationIntent = new Intent(this, AlarmReceiver.class);

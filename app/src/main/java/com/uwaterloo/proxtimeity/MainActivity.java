@@ -17,6 +17,8 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     ArrayList<Reminder> listOfReminders = new ArrayList<>();
+    ArrayList<TimeReminder> listOfTimeReminders = new ArrayList<>();
+    ArrayList<LocationReminder> listOfLocationReminders = new ArrayList<>();
     ReminderArrayAdapter reminderAdapter;
     SharedPreferences mPrefs;
 
@@ -26,13 +28,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mPrefs = this.getSharedPreferences("com.uwaterloo.proxtimeity", Context.MODE_PRIVATE);
-        SharedPreferences.Editor prefsEditor = mPrefs.edit();
         Gson gson = new Gson();
 
-        String json = mPrefs.getString("allReminders", "");
-        Type type = new TypeToken<ArrayList<Reminder>>(){}.getType();
-        if (gson.fromJson(json, type) != null)
-            listOfReminders = gson.fromJson(json, type);
+        String timeJson = mPrefs.getString("TimeReminders", "");
+        String locationJson = mPrefs.getString("LocationReminders", "");
+        Type locationType = new TypeToken<ArrayList<LocationReminder>>(){}.getType();
+        Type timeType = new TypeToken<ArrayList<TimeReminder>>(){}.getType();
+
+        if (gson.fromJson(timeJson, timeType) != null)
+            listOfTimeReminders = gson.fromJson(timeJson, timeType);
+
+        if (gson.fromJson(locationJson, locationType) != null)
+            listOfLocationReminders = gson.fromJson(locationJson, locationType);
 
         reminderAdapter = new ReminderArrayAdapter(this, R.layout.item_reminder ,listOfReminders);
         ListView listView = (ListView) findViewById(R.id.listOfReminders);

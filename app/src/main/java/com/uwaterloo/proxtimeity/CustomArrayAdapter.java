@@ -18,7 +18,7 @@ public abstract class CustomArrayAdapter<T> extends ArrayAdapter<T> {
     private int resource;
 
     // Constructor: make sure you call super(context resource, values) in your constructor
-    public CustomArrayAdapter(Context context, int resource, ArrayList<T> values) {
+    public  CustomArrayAdapter(Context context, int resource, ArrayList<T> values) {
         super(context, resource, values);
         this.resource = resource;
     }

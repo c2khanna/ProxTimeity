@@ -91,19 +91,18 @@ public class CreateLocationActivity extends AppCompatActivity
         boolean isChecked = ((CheckBox) findViewById(R.id.check_store_hours)).isChecked();
         LocationReminder reminder = new LocationReminder(description, selectedLocation ,isChecked, reminderExpiryDateTime);
 
-        String json = mPrefs.getString("allReminders", "");
-        Type type = new TypeToken<ArrayList<Reminder>>(){}.getType();
+        String json = mPrefs.getString("LocationReminders", "");
+        Type type = new TypeToken<ArrayList<LocationReminder>>(){}.getType();
         Gson gson = new Gson();
-        ArrayList<Reminder> allReminders = new ArrayList<>();
+        ArrayList<LocationReminder> LocationReminders = new ArrayList<>();
         if (gson.fromJson(json, type) != null)
-            allReminders = gson.fromJson(json, type);
+            LocationReminders = gson.fromJson(json, type);
 
-        allReminders.add(reminder);
+        LocationReminders.add(reminder);
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
-        String newJson = gson.toJson(allReminders);
-        prefsEditor.putString("allReminders", newJson);
+        String newJson = gson.toJson(LocationReminders);
+        prefsEditor.putString("LocationReminders", newJson);
         prefsEditor.apply();
-
 
         Intent notificationIntent = new Intent(this, AlarmReceiver.class);
         notificationIntent.putExtra("reminder name", reminder.reminderName);
@@ -112,8 +111,6 @@ public class CreateLocationActivity extends AppCompatActivity
         // set alarm
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         if(alarmManager != null) {
-//            alarmManager.setAlarm(this.getApplicationContext(), reminder);
-            System.out.println("alarm!!!!");
             long futureInMillis = reminder.remindMeBefore.getTimeInMillis();
             Log.d("the time", Long.toString(futureInMillis));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
