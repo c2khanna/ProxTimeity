@@ -1,5 +1,6 @@
 package com.uwaterloo.proxtimeity;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -8,8 +9,12 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -18,11 +23,19 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -30,13 +43,16 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 public class CreateLocationActivity extends AppCompatActivity
         implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     Calendar reminderExpiryDateTime = new GregorianCalendar();
     SharedPreferences mPrefs;
+    private FusedLocationProviderClient mFusedLocationClient;
+    LatLng locationLatLng1, locationLatLng2;
+    PlaceAutocompleteFragment autocompleteFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +68,55 @@ public class CreateLocationActivity extends AppCompatActivity
         dateSelectedText.setText(dateFormat.format(nowCalendar.getTime()));
         String template = "hh:mm aaa";
         timeSelectedText.setText(DateFormat.format(template, nowCalendar.getTime()));
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        placeListener();
     }
 
+    public void placeListener(){
+        int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION);
+
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    1);
+        }
+
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        mFusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            locationLatLng1 = new LatLng(location.getLatitude(), location.getLongitude());
+                            locationLatLng2 = new LatLng(location.getLatitude()+0.05, location.getLongitude()+0.05);
+
+                            autocompleteFragment.setBoundsBias(new LatLngBounds(
+                                    locationLatLng1,
+                                    locationLatLng2));
+                        }
+                    }
+                });
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error
+            }
+        });
+    }
     public void datePicker(View view){
         DatePickerFragment fragment = new DatePickerFragment();
         fragment.show(getSupportFragmentManager(),"date");
@@ -86,8 +149,9 @@ public class CreateLocationActivity extends AppCompatActivity
     public void saveLocationReminder(View view) {
         EditText edit = (EditText)findViewById(R.id.reminder_description);
         String description = edit.getText().toString();
-        Spinner locationDropdown = (Spinner)findViewById(R.id.locations_spinner);
-        String selectedLocation = locationDropdown.getSelectedItem().toString();
+        //Spinner locationDropdown = (Spinner)findViewById(R.id.locations_spinner);
+        //String selectedLocation = locationDropdown.getSelectedItem().toString();
+        String selectedLocation = "";
         boolean isChecked = ((CheckBox) findViewById(R.id.check_store_hours)).isChecked();
         LocationReminder reminder = new LocationReminder(description, selectedLocation ,isChecked, reminderExpiryDateTime);
 

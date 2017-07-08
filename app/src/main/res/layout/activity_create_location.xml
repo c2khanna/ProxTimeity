@@ -43,24 +43,21 @@
                 android:layout_marginRight="16dp"
                 android:hint="@string/prompt_reminder_description"/>
 
-            <Spinner
-                android:id="@+id/locations_spinner"
-                android:layout_below="@+id/reminder_description"
-                android:entries="@array/location_array"
+            <fragment
+                android:id="@+id/place_autocomplete_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:layout_marginBottom="32dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:textSize="20sp" />
+                android:layout_margin="16dp"
+                android:layout_below="@+id/reminder_description"
+                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+                />
 
             <CheckBox
                 android:id="@+id/check_store_hours"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                android:layout_below="@+id/locations_spinner"
+                android:layout_below="@+id/place_autocomplete_fragment"
                 android:layout_marginBottom="32dp"
                 android:textSize="16sp"
                 android:text="@string/checkbox_string"/>

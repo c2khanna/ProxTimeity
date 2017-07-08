@@ -4,7 +4,7 @@
     <string name="checkbox_string">Remind me only during store hours</string>
     <string name="save">Save</string>
     <string name="remindMeBefore">Remind me before: </string>
-    <string name="prompt_reminder_description">What do you want to be reminded about?</string>
+    <string name="prompt_reminder_description">What is this reminder about?</string>
     <string name="prompt_reminder_time">When would you like to be reminded?</string>
     <string name="location">Location</string>
     <string name="time">Time</string>
