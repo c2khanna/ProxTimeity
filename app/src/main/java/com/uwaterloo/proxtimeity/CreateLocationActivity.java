@@ -52,6 +52,7 @@ public class CreateLocationActivity extends AppCompatActivity
     private FusedLocationProviderClient mFusedLocationClient;
     LatLng locationLatLng1, locationLatLng2;
     PlaceAutocompleteFragment autocompleteFragment;
+    Place selectedPlace;
 
 
     @Override
@@ -108,6 +109,7 @@ public class CreateLocationActivity extends AppCompatActivity
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
+                selectedPlace = place;
                 // TODO: Get info about the selected place.
             }
 
@@ -149,9 +151,12 @@ public class CreateLocationActivity extends AppCompatActivity
     public void saveLocationReminder(View view) {
         EditText edit = (EditText)findViewById(R.id.reminder_description);
         String description = edit.getText().toString();
-        //Spinner locationDropdown = (Spinner)findViewById(R.id.locations_spinner);
-        //String selectedLocation = locationDropdown.getSelectedItem().toString();
+
         String selectedLocation = "";
+
+        if (selectedPlace != null){
+            selectedLocation = selectedPlace.getName().toString();
+        }
         boolean isChecked = ((CheckBox) findViewById(R.id.check_store_hours)).isChecked();
         LocationReminder reminder = new LocationReminder(description, selectedLocation ,isChecked, reminderExpiryDateTime);
 
