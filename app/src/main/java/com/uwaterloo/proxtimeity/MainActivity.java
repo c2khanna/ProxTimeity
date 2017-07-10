@@ -3,8 +3,14 @@ package com.uwaterloo.proxtimeity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.*;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ListView;
 
@@ -16,10 +22,6 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    ArrayList<Reminder> listOfReminders = new ArrayList<>();
-    ArrayList<TimeReminder> listOfTimeReminders = new ArrayList<>();
-    ArrayList<LocationReminder> listOfLocationReminders = new ArrayList<>();
-    ReminderArrayAdapter reminderAdapter;
     SharedPreferences mPrefs;
 
     @Override
@@ -27,23 +29,34 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mPrefs = this.getSharedPreferences("com.uwaterloo.proxtimeity", Context.MODE_PRIVATE);
-        Gson gson = new Gson();
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        String timeJson = mPrefs.getString("TimeReminders", "");
-        String locationJson = mPrefs.getString("LocationReminders", "");
-        Type locationType = new TypeToken<ArrayList<LocationReminder>>(){}.getType();
-        Type timeType = new TypeToken<ArrayList<TimeReminder>>(){}.getType();
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.addTab(tabLayout.newTab().setText("Time-Based"));
+        tabLayout.addTab(tabLayout.newTab().setText("Location-Based"));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        if (gson.fromJson(timeJson, timeType) != null)
-            listOfTimeReminders = gson.fromJson(timeJson, timeType);
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+        final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
 
-        if (gson.fromJson(locationJson, locationType) != null)
-            listOfLocationReminders = gson.fromJson(locationJson, locationType);
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
 
-        reminderAdapter = new ReminderArrayAdapter(this, R.layout.item_reminder ,listOfReminders);
-        ListView listView = (ListView) findViewById(R.id.listOfReminders);
-        listView.setAdapter(reminderAdapter);
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
     }
 

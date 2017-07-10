@@ -8,19 +8,19 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
- * Created by Naima on 2017-06-18.
+ * Created by Naima on 2017-07-09.
  */
 
-public class ReminderArrayAdapter extends CustomArrayAdapter<Reminder> {
+public class TimeReminderArrayAdapter extends CustomArrayAdapter<TimeReminder> {
 
     private Context mContext;
-    private ArrayList<Reminder> mReminders;
+    private ArrayList<TimeReminder> mReminders;
     private int mResource;
 
-    public ReminderArrayAdapter(Context context, int resource, ArrayList<Reminder> reminders) {
-        super(context, resource, reminders);
+    public TimeReminderArrayAdapter(Context context, int resource, ArrayList<TimeReminder> values) {
+        super(context, resource, values);
         this.mContext = context;
-        this.mReminders = reminders;
+        this.mReminders = values;
         this.mResource = resource;
     }
 
@@ -40,17 +40,11 @@ public class ReminderArrayAdapter extends CustomArrayAdapter<Reminder> {
     }
 
     @Override
-    public void fillViewHolder(Object viewHolder, Reminder data) {
+    public void fillViewHolder(Object viewHolder, TimeReminder data) {
         final ViewHolder mViewHolder = (ViewHolder) viewHolder;
         if (data.reminderName != null) {
             mViewHolder.reminderName.setText(data.reminderName);
         }
-
-        if (data.reminderType == 0) {
-            mViewHolder.picture.setImageResource(R.drawable.ic_clock);
-        } else {
-            mViewHolder.picture.setImageResource(R.drawable.ic_location);
-        }
-
+        mViewHolder.picture.setImageResource(R.drawable.ic_clock);
     }
 }
