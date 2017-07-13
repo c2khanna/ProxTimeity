@@ -97,7 +97,7 @@ public class CreateLocationActivity extends AppCompatActivity
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
                             locationLatLng1 = new LatLng(location.getLatitude(), location.getLongitude());
-                            locationLatLng2 = new LatLng(location.getLatitude()+0.05, location.getLongitude()+0.05);
+                            locationLatLng2 = new LatLng(location.getLatitude(), location.getLongitude());
 
                             autocompleteFragment.setBoundsBias(new LatLngBounds(
                                     locationLatLng1,
@@ -177,6 +177,7 @@ public class CreateLocationActivity extends AppCompatActivity
         notificationIntent.putExtra("reminder name", reminder.reminderName);
         notificationIntent.putExtra("reminder type", "Location Based Reminder");
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         // set alarm
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         if(alarmManager != null) {
