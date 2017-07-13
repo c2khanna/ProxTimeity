@@ -148,6 +148,10 @@ public class CreateLocationActivity extends AppCompatActivity
                 .setText(DateFormat.format(template, reminderExpiryDateTime.getTime()));
     }
 
+    public void deleteLocationReminder(){
+
+    }
+
     public void saveLocationReminder(View view) {
         EditText edit = (EditText)findViewById(R.id.reminder_description);
         String description = edit.getText().toString();

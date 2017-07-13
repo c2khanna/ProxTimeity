@@ -8,6 +8,7 @@ public class Reminder {
 
     int reminderType = 0; // default is 0 = time based, 1 = location based
     String reminderName = "";
+    Boolean isCompleted = Boolean.FALSE;
 
     public Reminder() {
     }

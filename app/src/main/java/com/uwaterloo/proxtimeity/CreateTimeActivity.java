@@ -79,6 +79,10 @@ public class CreateTimeActivity extends AppCompatActivity
                 .setText(DateFormat.format(template, reminderDateTime.getTime()));
     }
 
+    public void deleteTimeReminder(){
+
+    }
+
     public void saveTimeReminder(View view) {
         EditText edit = (EditText)findViewById(R.id.time_reminder_description);
         String description = edit.getText().toString();
