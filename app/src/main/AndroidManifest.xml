@@ -33,6 +33,7 @@
             android:parentActivityName=".ChooseTypeActivity"
         />
         <receiver android:name=".AlarmReceiver" />
+        <service android:name=".GeofenceTransitionsIntentService"/>
     </application>
 
 </manifest>
