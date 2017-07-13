@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
@@ -27,6 +28,7 @@ public class TimeReminderArrayAdapter extends CustomArrayAdapter<TimeReminder> {
     private class ViewHolder {
         TextView reminderName;
         ImageView picture;
+        TextView reminderTime;
     }
 
     @Override
@@ -35,6 +37,7 @@ public class TimeReminderArrayAdapter extends CustomArrayAdapter<TimeReminder> {
 
         viewHolder.reminderName = (TextView)rowView.findViewById(R.id.reminder_name);
         viewHolder.picture = (ImageView)rowView.findViewById(R.id.reminder_image);
+        viewHolder.reminderTime = (TextView)rowView.findViewById(R.id.reminder_details);
 
         return viewHolder;
     }
@@ -45,6 +48,10 @@ public class TimeReminderArrayAdapter extends CustomArrayAdapter<TimeReminder> {
         if (data.reminderName != null) {
             mViewHolder.reminderName.setText(data.reminderName);
         }
+        SimpleDateFormat format = new SimpleDateFormat("hh:mm a 'on' yyyy/MM/dd");
+        String formattedDate = format.format(data.reminderTime.getTime());
+        String reminderTime = "At " + formattedDate;
         mViewHolder.picture.setImageResource(R.drawable.ic_clock);
+        mViewHolder.reminderTime.setText(reminderTime);
     }
 }

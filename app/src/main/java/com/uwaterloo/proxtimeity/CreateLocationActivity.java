@@ -97,7 +97,7 @@ public class CreateLocationActivity extends AppCompatActivity
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
                             locationLatLng1 = new LatLng(location.getLatitude(), location.getLongitude());
-                            locationLatLng2 = new LatLng(location.getLatitude()+0.05, location.getLongitude()+0.05);
+                            locationLatLng2 = new LatLng(location.getLatitude(), location.getLongitude());
 
                             autocompleteFragment.setBoundsBias(new LatLngBounds(
                                     locationLatLng1,
