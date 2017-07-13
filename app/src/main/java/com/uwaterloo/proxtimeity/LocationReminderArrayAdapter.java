@@ -27,6 +27,7 @@ public class LocationReminderArrayAdapter extends CustomArrayAdapter<LocationRem
     private class ViewHolder {
         TextView reminderName;
         ImageView picture;
+        TextView reminderLocation;
     }
 
     @Override
@@ -35,6 +36,7 @@ public class LocationReminderArrayAdapter extends CustomArrayAdapter<LocationRem
 
         viewHolder.reminderName = (TextView)rowView.findViewById(R.id.reminder_name);
         viewHolder.picture = (ImageView)rowView.findViewById(R.id.reminder_image);
+        viewHolder.reminderLocation = (TextView) rowView.findViewById(R.id.reminder_details);
 
         return viewHolder;
     }
@@ -45,6 +47,8 @@ public class LocationReminderArrayAdapter extends CustomArrayAdapter<LocationRem
         if (data.reminderName != null) {
             mViewHolder.reminderName.setText(data.reminderName);
         }
+        String reminderLocation = "At " + data.location;
         mViewHolder.picture.setImageResource(R.drawable.ic_location);
+        mViewHolder.reminderLocation.setText(reminderLocation);
     }
 }
