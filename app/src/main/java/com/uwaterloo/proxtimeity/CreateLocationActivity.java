@@ -62,7 +62,7 @@ public class CreateLocationActivity extends AppCompatActivity
     private PendingIntent mGeofencePendingIntent;
     private ArrayList<Geofence> mGeofenceList = new ArrayList<>();
     private GeofencingClient mGeofencingClient;
-    LatLng GeofenceLatLng1, GeofenceLatLng2;
+//    LatLng GeofenceLatLng1, GeofenceLatLng2;
 
     LatLng locationLatLng1, locationLatLng2;
     PlaceAutocompleteFragment autocompleteFragment;
@@ -239,58 +239,60 @@ public class CreateLocationActivity extends AppCompatActivity
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        boolean locationTracking = mPrefs.getBoolean("LocationTracking", false);
+//        boolean locationTracking = mPrefs.getBoolean("LocationTracking", false);
 
-        if (!locationTracking) {
-            prefsEditor.putBoolean("LocationTracking", true);
-            UUID idOne = UUID.randomUUID();
+//        if (!locationTracking) {
+//        prefsEditor.putBoolean("LocationTracking", true);
+        UUID idOne = UUID.randomUUID();
 
-            mFusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            Log.i("SUCCES!!: ", "Location found!");
-                            // Got last known location. In some rare situations this can be null.
-                            if (location != null) {
-                                GeofenceLatLng1 = new LatLng(location.getLatitude(), location.getLongitude());
-                            }
-                        }
-                    });
+//        mFusedLocationClient.getLastLocation()
+//                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+//                    @Override
+//                    public void onSuccess(Location location) {
+//                        Log.i("SUCCES!!: ", "Location Value!");
+//                        Log.i("Location is Null: ", Boolean.toString((location == null)));
+//                        // Got last known location. In some rare situations this can be null.
+//                        if (location != null) {
+//                            GeofenceLatLng1 = new LatLng(location.getLatitude(), location.getLongitude());
+//                        }
+//                    }
+//                });
 
 
+        if (selectedPlace != null) {
+            LatLng selectedLatLng = selectedPlace.getLatLng();
             mGeofenceList.add(new Geofence.Builder()
                     // Set the request ID of the geofence. This is a string to identify this
                     // geofence.
                     .setRequestId(idOne.toString())
                     .setCircularRegion(
-                            GeofenceLatLng1 == null ? 37 : GeofenceLatLng1.latitude,
-                            GeofenceLatLng1 == null ? -122 : GeofenceLatLng1.longitude,
+                            selectedLatLng.latitude,
+                            selectedLatLng.longitude,
                             2000
                     )
-                    .setExpirationDuration(60*60*1000)
+                    .setExpirationDuration(60 * 60 * 1000)
                     .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
                             Geofence.GEOFENCE_TRANSITION_EXIT)
                     .build());
 
+//        }
+
+            mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
+                    .addOnSuccessListener(this, new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            // Geofences added
+                            Log.i("SUCCESS: ", "Geofence added");
+                        }
+                    })
+                    .addOnFailureListener(this, new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            // Failed to add geofences
+                            Log.i("FAILURE: ", "Geofence FAILED TO ADD");
+                        }
+                    });
         }
-
-        mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
-                .addOnSuccessListener(this, new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        // Geofences added
-                        Log.i("SUCCESS: ", "Geofence added");
-                    }
-                })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Failed to add geofences
-                        Log.i("FAILURE: ", "Geofence FAILED TO ADD");
-                    }
-                });
-
-
 
         //return to Home screen
         Intent goToMainScreen = new Intent(this, MainActivity.class);
