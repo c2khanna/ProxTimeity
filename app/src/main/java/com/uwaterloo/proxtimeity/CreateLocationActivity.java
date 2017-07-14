@@ -109,6 +109,8 @@ public class CreateLocationActivity extends AppCompatActivity
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
+                            Log.i("INFO: ", Double.toString(location.getLatitude()));
+                            Log.i("INFO: ", Double.toString(location.getLongitude()));
                             locationLatLng1 = new LatLng(location.getLatitude(), location.getLongitude());
                             locationLatLng2 = new LatLng(location.getLatitude(), location.getLongitude());
 
@@ -263,6 +265,7 @@ public class CreateLocationActivity extends AppCompatActivity
             geofence.longitude = Double.toString(selectedLatLng.longitude);
             geofence.radius = Integer.toString(radius);
             geofence.name = idOne.toString();
+            geofence.description = description;
 
             String oldGeofencesJson = mPrefs.getString("Geofences", "");
             ArrayList<GeofenceData> geofences = new ArrayList<>();

@@ -9,6 +9,7 @@ public class GeofenceData {
     String latitude;
     String longitude;
     String radius;
+    String description;
 
     public GeofenceData() {
 
