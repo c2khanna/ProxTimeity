@@ -225,8 +225,6 @@ public class CreateLocationActivity extends AppCompatActivity
             Toast.makeText(this.getApplicationContext(), "Alarm is null", Toast.LENGTH_SHORT).show();
         }
 
-        mGeofencingClient = LocationServices.getGeofencingClient(this);
-
         int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION);
 
@@ -239,27 +237,13 @@ public class CreateLocationActivity extends AppCompatActivity
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-//        boolean locationTracking = mPrefs.getBoolean("LocationTracking", false);
-
-//        if (!locationTracking) {
-//        prefsEditor.putBoolean("LocationTracking", true);
-        UUID idOne = UUID.randomUUID();
-
-//        mFusedLocationClient.getLastLocation()
-//                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-//                    @Override
-//                    public void onSuccess(Location location) {
-//                        Log.i("SUCCES!!: ", "Location Value!");
-//                        Log.i("Location is Null: ", Boolean.toString((location == null)));
-//                        // Got last known location. In some rare situations this can be null.
-//                        if (location != null) {
-//                            GeofenceLatLng1 = new LatLng(location.getLatitude(), location.getLongitude());
-//                        }
-//                    }
-//                });
-
 
         if (selectedPlace != null) {
+            mGeofencingClient = LocationServices.getGeofencingClient(this);
+            final GeofenceData geofence = new GeofenceData();
+
+            final UUID idOne = UUID.randomUUID();
+            final int radius = 2000;
             LatLng selectedLatLng = selectedPlace.getLatLng();
             mGeofenceList.add(new Geofence.Builder()
                     // Set the request ID of the geofence. This is a string to identify this
@@ -268,14 +252,28 @@ public class CreateLocationActivity extends AppCompatActivity
                     .setCircularRegion(
                             selectedLatLng.latitude,
                             selectedLatLng.longitude,
-                            2000
+                            radius
                     )
                     .setExpirationDuration(60 * 60 * 1000)
                     .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
                             Geofence.GEOFENCE_TRANSITION_EXIT)
                     .build());
 
-//        }
+            geofence.latitude = Double.toString(selectedLatLng.latitude);
+            geofence.longitude = Double.toString(selectedLatLng.longitude);
+            geofence.radius = Integer.toString(radius);
+            geofence.name = idOne.toString();
+
+            String oldGeofencesJson = mPrefs.getString("Geofences", "");
+            ArrayList<GeofenceData> geofences = new ArrayList<>();
+
+            if (gson.fromJson(oldGeofencesJson, type) != null) {
+                geofences = gson.fromJson(json, type);
+            }
+            geofences.add(geofence);
+            String newGeofenceJson = gson.toJson(geofences);
+            prefsEditor.putString("Geofences", newGeofenceJson);
+            prefsEditor.apply();
 
             mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
                     .addOnSuccessListener(this, new OnSuccessListener<Void>() {
