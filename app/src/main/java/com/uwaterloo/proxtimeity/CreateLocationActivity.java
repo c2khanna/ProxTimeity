@@ -171,7 +171,7 @@ public class CreateLocationActivity extends AppCompatActivity
     }
 
     private PendingIntent getGeofencePendingIntent() {
-        // Reuse the PendingIntent if we already have it.
+        // Reuse  PendingIntent if already available
         if (mGeofencePendingIntent != null) {
             return mGeofencePendingIntent;
         }
@@ -199,10 +199,18 @@ public class CreateLocationActivity extends AppCompatActivity
         Type type = new TypeToken<ArrayList<LocationReminder>>(){}.getType();
         Gson gson = new Gson();
         ArrayList<LocationReminder> LocationReminders = new ArrayList<>();
+
+
+//        Log.i("Type!", type.toString());
+//        Log.i("LocationReminderType!", LocationReminders.getClass().toString());
         if (gson.fromJson(json, type) != null)
             LocationReminders = gson.fromJson(json, type);
 
         LocationReminders.add(reminder);
+//        for (LocationReminder gd : LocationReminders) {
+//            Log.i("GEOFENCE!!!:", Boolean.toString(gd.remindDuringHours));
+//        }
+
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
         String newJson = gson.toJson(LocationReminders);
         prefsEditor.putString("LocationReminders", newJson);
@@ -248,8 +256,6 @@ public class CreateLocationActivity extends AppCompatActivity
             final int radius = 2000;
             LatLng selectedLatLng = selectedPlace.getLatLng();
             mGeofenceList.add(new Geofence.Builder()
-                    // Set the request ID of the geofence. This is a string to identify this
-                    // geofence.
                     .setRequestId(idOne.toString())
                     .setCircularRegion(
                             selectedLatLng.latitude,
@@ -268,12 +274,19 @@ public class CreateLocationActivity extends AppCompatActivity
             geofence.description = description;
 
             String oldGeofencesJson = mPrefs.getString("Geofences", "");
+//            Log.i("JSON GEOFENCE!", oldGeofencesJson);
             ArrayList<GeofenceData> geofences = new ArrayList<>();
+            Type geofenceTypeArrayList = new TypeToken<ArrayList<GeofenceData>>(){}.getType();
+//            Log.i("GeofenceType", geofenceTypeArrayList.toString());
+//            Log.i("NEW GEOFENCE TYPE", geofences.getClass().toString());
 
-            if (gson.fromJson(oldGeofencesJson, type) != null) {
-                geofences = gson.fromJson(json, type);
+            if (gson.fromJson(oldGeofencesJson, geofenceTypeArrayList) != null) {
+                geofences = gson.fromJson(oldGeofencesJson, geofenceTypeArrayList);
             }
             geofences.add(geofence);
+//            for (GeofenceData gd : geofences) {
+//                Log.i("GEOFENCE!!!:", gd.toString());
+//            }
             String newGeofenceJson = gson.toJson(geofences);
             prefsEditor.putString("Geofences", newGeofenceJson);
             prefsEditor.apply();

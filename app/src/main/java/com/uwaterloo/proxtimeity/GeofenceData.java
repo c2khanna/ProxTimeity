@@ -14,4 +14,9 @@ public class GeofenceData {
     public GeofenceData() {
 
     }
+
+    @Override
+    public String toString() {
+        return name + '\n' + latitude + '\n' + longitude + '\n' + radius + '\n' + description + '\n';
+    }
 }
