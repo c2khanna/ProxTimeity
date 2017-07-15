@@ -19,6 +19,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -53,22 +55,39 @@ public class CreateLocationActivity extends AppCompatActivity
     LatLng locationLatLng1, locationLatLng2;
     PlaceAutocompleteFragment autocompleteFragment;
     Place selectedPlace;
+    LocationReminder reminderToBeEdited;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_location);
+        reminderToBeEdited = getIntent().getParcelableExtra("reminder");
         mPrefs = this.getSharedPreferences("com.uwaterloo.proxtimeity", Context.MODE_PRIVATE);
 
         // set calendar with current time and set text on create screen
         TextView dateSelectedText = (TextView)findViewById(R.id.dateSelected);
         TextView timeSelectedText = (TextView)findViewById(R.id.timeSelected);
-        Calendar nowCalendar = Calendar.getInstance();
-        final java.text.DateFormat dateFormat = DateFormat.getLongDateFormat(getApplicationContext());
-        dateSelectedText.setText(dateFormat.format(nowCalendar.getTime()));
-        String template = "hh:mm aaa";
-        timeSelectedText.setText(DateFormat.format(template, nowCalendar.getTime()));
+        EditText description = (EditText) findViewById(R.id.reminder_description);
+        autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+        if(reminderToBeEdited == null){
+            Calendar nowCalendar = Calendar.getInstance();
+            final java.text.DateFormat dateFormat = DateFormat.getLongDateFormat(getApplicationContext());
+            dateSelectedText.setText(dateFormat.format(nowCalendar.getTime()));
+            String template = "hh:mm aaa";
+            timeSelectedText.setText(DateFormat.format(template, nowCalendar.getTime()));
+        }
+        else{
+            description.setText(reminderToBeEdited.reminderName);
+            autocompleteFragment.setText(reminderToBeEdited.location);
+            final java.text.DateFormat dateFormat = DateFormat.getLongDateFormat(getApplicationContext());
+            dateSelectedText.setText(dateFormat.format(reminderToBeEdited.remindMeBefore.getTime()));
+            String template = "hh:mm aaa";
+            timeSelectedText.setText(DateFormat.format(template, reminderToBeEdited.remindMeBefore.getTime()));
+            deleteLocationReminder(reminderToBeEdited);
+            reminderExpiryDateTime = reminderToBeEdited.remindMeBefore;
+        }
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         placeListener();
     }
@@ -87,9 +106,6 @@ public class CreateLocationActivity extends AppCompatActivity
             return;
         }
 
-        autocompleteFragment = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-
         mFusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override
@@ -105,6 +121,7 @@ public class CreateLocationActivity extends AppCompatActivity
                         }
                     }
                 });
+        autocompleteFragment.setHint("Select a Location");
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -119,6 +136,7 @@ public class CreateLocationActivity extends AppCompatActivity
             }
         });
     }
+
     public void datePicker(View view){
         DatePickerFragment fragment = new DatePickerFragment();
         fragment.show(getSupportFragmentManager(),"date");
@@ -148,8 +166,47 @@ public class CreateLocationActivity extends AppCompatActivity
                 .setText(DateFormat.format(template, reminderExpiryDateTime.getTime()));
     }
 
-    public void deleteLocationReminder(){
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if(reminderToBeEdited == null)
+            getMenuInflater().inflate(R.menu.menu_no_delete_location, menu);
+        else
+            getMenuInflater().inflate(R.menu.menu_delete_location, menu);
 
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    // handle button activities
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.location_delete) {
+            deleteLocationReminder(reminderToBeEdited);
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void deleteLocationReminder(LocationReminder reminderToBeDeleted){
+        ArrayList<LocationReminder> locationReminders = new ArrayList<>();
+        String json = mPrefs.getString("LocationReminders", "");
+        Type type = new TypeToken<ArrayList<LocationReminder>>(){}.getType();
+        Gson gson = new Gson();
+        if (gson.fromJson(json, type) != null)
+            locationReminders = gson.fromJson(json, type);
+
+        for(int i = 0; i < locationReminders.size(); i++){
+            if(locationReminders.get(i).reminderID == reminderToBeDeleted.reminderID){
+                locationReminders.remove(i);
+                break;
+            }
+        }
+
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        String newJson = gson.toJson(locationReminders);
+        prefsEditor.putString("LocationReminders", newJson);
+        prefsEditor.apply();
     }
 
     public void saveLocationReminder(View view) {
@@ -180,8 +237,8 @@ public class CreateLocationActivity extends AppCompatActivity
         Intent notificationIntent = new Intent(this, AlarmReceiver.class);
         notificationIntent.putExtra("reminder name", reminder.reminderName);
         notificationIntent.putExtra("reminder type", "Location Based Reminder");
-        final int uniqueID = (int) System.currentTimeMillis();
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, uniqueID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int)reminder.reminderID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         // set alarm
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         if(alarmManager != null) {

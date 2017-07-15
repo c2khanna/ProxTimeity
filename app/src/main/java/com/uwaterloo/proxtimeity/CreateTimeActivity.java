@@ -136,8 +136,6 @@ public class CreateTimeActivity extends AppCompatActivity
         String newJson = gson.toJson(timeReminders);
         prefsEditor.putString("TimeReminders", newJson);
         prefsEditor.apply();
-
-
     }
 
     public void saveTimeReminder(View view) {
