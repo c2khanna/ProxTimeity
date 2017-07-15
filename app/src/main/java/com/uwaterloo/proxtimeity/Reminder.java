@@ -6,15 +6,11 @@ package com.uwaterloo.proxtimeity;
 
 public class Reminder {
 
-    int reminderType = 0; // default is 0 = time based, 1 = location based
+    long reminderID;
     String reminderName = "";
+    Boolean isCompleted = Boolean.FALSE;
 
     public Reminder() {
-    }
-
-    public Reminder(int type, String name){
-        reminderType = type;
-        reminderName = name;
     }
 
 }

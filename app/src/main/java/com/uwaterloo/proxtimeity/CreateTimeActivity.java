@@ -14,6 +14,8 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -34,21 +36,35 @@ public class CreateTimeActivity extends AppCompatActivity
 
     Calendar reminderDateTime = new GregorianCalendar() ;
     SharedPreferences mPrefs;
+    TimeReminder reminderToBeEdited;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_time);
+        reminderToBeEdited = getIntent().getParcelableExtra("reminder");
         mPrefs = this.getSharedPreferences("com.uwaterloo.proxtimeity", Context.MODE_PRIVATE);
-        
-        // set calendar with current time and set text on create screen
         TextView dateSelectedText = (TextView)findViewById(R.id.date_selected);
         TextView timeSelectedText = (TextView)findViewById(R.id.time_selected);
-        Calendar nowCalendar = Calendar.getInstance();
-        final java.text.DateFormat dateFormat = DateFormat.getLongDateFormat(getApplicationContext());
-        dateSelectedText.setText(dateFormat.format(nowCalendar.getTime()));
-        String template = "hh:mm aaa";
-        timeSelectedText.setText(DateFormat.format(template, nowCalendar.getTime()));
+        EditText description = (EditText)findViewById(R.id.time_reminder_description);
+
+        if(reminderToBeEdited == null) {
+            // set calendar with current time and set text on create screen
+            Calendar nowCalendar = Calendar.getInstance();
+            final java.text.DateFormat dateFormat = DateFormat.getLongDateFormat(getApplicationContext());
+            dateSelectedText.setText(dateFormat.format(nowCalendar.getTime()));
+            String template = "hh:mm aaa";
+            timeSelectedText.setText(DateFormat.format(template, nowCalendar.getTime()));
+        }
+        else{
+            final java.text.DateFormat dateFormat = DateFormat.getLongDateFormat(getApplicationContext());
+            dateSelectedText.setText(dateFormat.format(reminderToBeEdited.reminderTime.getTime()));
+            description.setText(reminderToBeEdited.reminderName);
+            String template = "hh:mm aaa";
+            timeSelectedText.setText(DateFormat.format(template, reminderToBeEdited.reminderTime.getTime()));
+            deleteTimeReminder(reminderToBeEdited);
+            reminderDateTime = reminderToBeEdited.reminderTime;
+        }
     }
 
     public void datePicker(View view){
@@ -79,6 +95,49 @@ public class CreateTimeActivity extends AppCompatActivity
                 .setText(DateFormat.format(template, reminderDateTime.getTime()));
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if(reminderToBeEdited == null)
+            getMenuInflater().inflate(R.menu.menu_no_delete_time, menu);
+        else
+            getMenuInflater().inflate(R.menu.menu_delete_time, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    // handle button activities
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.time_delete) {
+            deleteTimeReminder(reminderToBeEdited);
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void deleteTimeReminder(TimeReminder reminderToBeDeleted){
+        ArrayList<TimeReminder> timeReminders = new ArrayList<>();
+        String json = mPrefs.getString("TimeReminders", "");
+        Type type = new TypeToken<ArrayList<TimeReminder>>(){}.getType();
+        Gson gson = new Gson();
+        if (gson.fromJson(json, type) != null)
+            timeReminders = gson.fromJson(json, type);
+
+        for(int i = 0; i < timeReminders.size(); i++){
+            if(timeReminders.get(i).reminderID == reminderToBeDeleted.reminderID){
+                timeReminders.remove(i);
+                break;
+            }
+        }
+
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        String newJson = gson.toJson(timeReminders);
+        prefsEditor.putString("TimeReminders", newJson);
+        prefsEditor.apply();
+    }
+
     public void saveTimeReminder(View view) {
         EditText edit = (EditText)findViewById(R.id.time_reminder_description);
         String description = edit.getText().toString();
@@ -101,8 +160,7 @@ public class CreateTimeActivity extends AppCompatActivity
         Intent notificationIntent = new Intent(this, AlarmReceiver.class);
         notificationIntent.putExtra("reminder name", reminder.reminderName);
         notificationIntent.putExtra("reminder type", "Time Based Reminder");
-        final int uniqueID = (int) System.currentTimeMillis();
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, uniqueID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int)reminder.reminderID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         // set alarm
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         if(alarmManager != null) {
