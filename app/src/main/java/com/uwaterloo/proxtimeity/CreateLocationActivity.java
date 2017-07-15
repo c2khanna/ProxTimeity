@@ -12,6 +12,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
+import android.provider.SyncStateContract;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
@@ -31,12 +33,16 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -45,6 +51,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.UUID;
 
 public class CreateLocationActivity extends AppCompatActivity
         implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
@@ -52,11 +60,16 @@ public class CreateLocationActivity extends AppCompatActivity
     Calendar reminderExpiryDateTime = new GregorianCalendar();
     SharedPreferences mPrefs;
     private FusedLocationProviderClient mFusedLocationClient;
+
+    private PendingIntent mGeofencePendingIntent;
+    private ArrayList<Geofence> mGeofenceList = new ArrayList<>();
+    private GeofencingClient mGeofencingClient;
+//    LatLng GeofenceLatLng1, GeofenceLatLng2;
+
     LatLng locationLatLng1, locationLatLng2;
     PlaceAutocompleteFragment autocompleteFragment;
     Place selectedPlace;
     LocationReminder reminderToBeEdited;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +125,8 @@ public class CreateLocationActivity extends AppCompatActivity
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
+                            Log.i("INFO: ", Double.toString(location.getLatitude()));
+                            Log.i("INFO: ", Double.toString(location.getLongitude()));
                             locationLatLng1 = new LatLng(location.getLatitude(), location.getLongitude());
                             locationLatLng2 = new LatLng(location.getLatitude(), location.getLongitude());
 
@@ -208,6 +223,25 @@ public class CreateLocationActivity extends AppCompatActivity
         prefsEditor.putString("LocationReminders", newJson);
         prefsEditor.apply();
     }
+    private GeofencingRequest getGeofencingRequest() {
+        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+        builder.addGeofences(mGeofenceList);
+        return builder.build();
+    }
+
+    private PendingIntent getGeofencePendingIntent() {
+        // Reuse  PendingIntent if already available
+        if (mGeofencePendingIntent != null) {
+            return mGeofencePendingIntent;
+        }
+        Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
+        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
+        // calling addGeofences() and removeGeofences().
+        mGeofencePendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.
+                FLAG_UPDATE_CURRENT);
+        return mGeofencePendingIntent;
+    }
 
     public void saveLocationReminder(View view) {
         EditText edit = (EditText)findViewById(R.id.reminder_description);
@@ -225,10 +259,18 @@ public class CreateLocationActivity extends AppCompatActivity
         Type type = new TypeToken<ArrayList<LocationReminder>>(){}.getType();
         Gson gson = new Gson();
         ArrayList<LocationReminder> LocationReminders = new ArrayList<>();
+
+
+//        Log.i("Type!", type.toString());
+//        Log.i("LocationReminderType!", LocationReminders.getClass().toString());
         if (gson.fromJson(json, type) != null)
             LocationReminders = gson.fromJson(json, type);
 
         LocationReminders.add(reminder);
+//        for (LocationReminder gd : LocationReminders) {
+//            Log.i("GEOFENCE!!!:", Boolean.toString(gd.remindDuringHours));
+//        }
+
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
         String newJson = gson.toJson(LocationReminders);
         prefsEditor.putString("LocationReminders", newJson);
@@ -251,6 +293,79 @@ public class CreateLocationActivity extends AppCompatActivity
             }
         } else {
             Toast.makeText(this.getApplicationContext(), "Alarm is null", Toast.LENGTH_SHORT).show();
+        }
+
+        int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION);
+
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    1);
+        }
+
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        if (selectedPlace != null) {
+            mGeofencingClient = LocationServices.getGeofencingClient(this);
+            final GeofenceData geofence = new GeofenceData();
+
+            final UUID idOne = UUID.randomUUID();
+            final int radius = 2000;
+            LatLng selectedLatLng = selectedPlace.getLatLng();
+            mGeofenceList.add(new Geofence.Builder()
+                    .setRequestId(idOne.toString())
+                    .setCircularRegion(
+                            selectedLatLng.latitude,
+                            selectedLatLng.longitude,
+                            radius
+                    )
+                    .setExpirationDuration(60 * 60 * 1000)
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                            Geofence.GEOFENCE_TRANSITION_EXIT)
+                    .build());
+
+            geofence.latitude = Double.toString(selectedLatLng.latitude);
+            geofence.longitude = Double.toString(selectedLatLng.longitude);
+            geofence.radius = Integer.toString(radius);
+            geofence.name = idOne.toString();
+            geofence.description = description;
+
+            String oldGeofencesJson = mPrefs.getString("Geofences", "");
+//            Log.i("JSON GEOFENCE!", oldGeofencesJson);
+            ArrayList<GeofenceData> geofences = new ArrayList<>();
+            Type geofenceTypeArrayList = new TypeToken<ArrayList<GeofenceData>>(){}.getType();
+//            Log.i("GeofenceType", geofenceTypeArrayList.toString());
+//            Log.i("NEW GEOFENCE TYPE", geofences.getClass().toString());
+
+            if (gson.fromJson(oldGeofencesJson, geofenceTypeArrayList) != null) {
+                geofences = gson.fromJson(oldGeofencesJson, geofenceTypeArrayList);
+            }
+            geofences.add(geofence);
+//            for (GeofenceData gd : geofences) {
+//                Log.i("GEOFENCE!!!:", gd.toString());
+//            }
+            String newGeofenceJson = gson.toJson(geofences);
+            prefsEditor.putString("Geofences", newGeofenceJson);
+            prefsEditor.apply();
+
+            mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
+                    .addOnSuccessListener(this, new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            // Geofences added
+                            Log.i("SUCCESS: ", "Geofence added");
+                        }
+                    })
+                    .addOnFailureListener(this, new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            // Failed to add geofences
+                            Log.i("FAILURE: ", "Geofence FAILED TO ADD");
+                        }
+                    });
         }
 
         //return to Home screen
