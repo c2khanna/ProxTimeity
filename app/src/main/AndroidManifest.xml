@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.uwaterloo.proxtimeity">
 
-    <uses-permission android:name= "android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
@@ -15,7 +15,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDzLa8qSwXB_6atLv-wEFW2qR5KkG2xFuU" />
-        <activity android:name=".MainActivity"
+
+        <activity
+            android:name=".MainActivity"
             android:theme="@style/AppThemeNoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,18 +25,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ChooseTypeActivity"
-            android:parentActivityName=".MainActivity"/>
-        <activity android:name=".CreateTimeActivity"
-            android:windowSoftInputMode="stateHidden"
+        <activity
+            android:name=".ChooseTypeActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".CreateTimeActivity"
             android:parentActivityName=".ChooseTypeActivity"
-        />
-        <activity android:name=".CreateLocationActivity"
-            android:windowSoftInputMode="stateHidden"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".CreateLocationActivity"
             android:parentActivityName=".ChooseTypeActivity"
-        />
+            android:windowSoftInputMode="stateHidden" />
+
         <receiver android:name=".AlarmReceiver" />
-        <service android:name=".GeofenceTransitionsIntentService"/>
+
+        <service android:name=".GeofenceTransitionsIntentService" />
+
+        <activity android:name=".ViewCompletedRemindersActivity"
+            android:theme="@style/AppThemeNoActionBar"
+            android:parentActivityName=".MainActivity"/>
     </application>
 
 </manifest>
