@@ -11,6 +11,8 @@ import android.support.v4.view.*;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
@@ -63,6 +65,25 @@ public class MainActivity extends AppCompatActivity {
     public void goToChooseType(View view) {
         Intent goToChooseScreen = new Intent(MainActivity.this, ChooseTypeActivity.class);
         startActivity(goToChooseScreen);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main_activity, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    // handle button activities
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.completed_reminders) {
+            Intent goToCompletedReminders = new Intent(MainActivity.this, ViewCompletedRemindersActivity.class);
+            startActivity(goToCompletedReminders);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

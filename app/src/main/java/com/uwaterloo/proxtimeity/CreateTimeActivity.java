@@ -160,6 +160,7 @@ public class CreateTimeActivity extends AppCompatActivity
         Intent notificationIntent = new Intent(this, AlarmReceiver.class);
         notificationIntent.putExtra("reminder name", reminder.reminderName);
         notificationIntent.putExtra("reminder type", "Time Based Reminder");
+        notificationIntent.putExtra("reminderObject", reminder);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int)reminder.reminderID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         // set alarm
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
