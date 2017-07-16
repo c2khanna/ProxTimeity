@@ -1,6 +1,7 @@
 package com.uwaterloo.proxtimeity;
 
 import android.app.IntentService;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
@@ -73,23 +74,17 @@ public class GeofenceTransitionsIntentService extends IntentService {
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(this)
                             .setSmallIcon(R.drawable.ic_location)
-                            .setContentTitle("Proxtimeity Location Reminder")
+                            .setContentTitle("Location Based Reminder")
                             .setContentText(reminderDesc)
                             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                             .setPriority(NotificationCompat.PRIORITY_HIGH)
-                            .setVibrate(new long[0]);
+                            .setDefaults(Notification.DEFAULT_ALL);
             int mNotificationId = 1;
 
             NotificationManager mNotificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
             mNotificationManager.notify(mNotificationId, mBuilder.build());
-
-//            String geofenceTransitionDetails = getGeofenceTransitionDetails(
-//                    this,
-//                    geofenceTransition,
-//                    triggeringGeofences
-//            );
 
             // Send notification and log the transition details.
 //            sendNotification(geofenceTransitionDetails);

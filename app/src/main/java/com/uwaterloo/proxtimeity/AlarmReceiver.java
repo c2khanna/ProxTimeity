@@ -26,7 +26,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                     new NotificationCompat.Builder(context)
                             .setContentTitle(intent.getStringExtra("reminder type"))
                             .setContentText(intent.getStringExtra("reminder name"))
-                            .setDefaults(Notification.DEFAULT_VIBRATE)
+                            .setDefaults(Notification.DEFAULT_ALL)
                             .setPriority(Notification.PRIORITY_HIGH);
 
             if(intent.hasExtra("reminder type") && intent.getStringExtra("reminder type").equals("Location Based Reminder")) {

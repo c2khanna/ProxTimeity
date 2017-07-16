@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,7 +61,6 @@ public class CreateTimeActivity extends AppCompatActivity
             description.setText(reminderToBeEdited.reminderName);
             String template = "hh:mm aaa";
             timeSelectedText.setText(DateFormat.format(template, reminderToBeEdited.reminderTime.getTime()));
-            deleteTimeReminder(reminderToBeEdited);
             reminderDateTime = reminderToBeEdited.reminderTime;
         }
     }
@@ -136,6 +134,15 @@ public class CreateTimeActivity extends AppCompatActivity
         String newJson = gson.toJson(timeReminders);
         prefsEditor.putString("TimeReminders", newJson);
         prefsEditor.apply();
+
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+
+        Intent notificationIntent = new Intent(this, AlarmReceiver.class);
+        notificationIntent.putExtra("reminder name", reminderToBeDeleted.reminderName);
+        notificationIntent.putExtra("reminder type", "Time Based Reminder");
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int)reminderToBeDeleted.reminderID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.cancel(pendingIntent);
     }
 
     public void saveTimeReminder(View view) {
@@ -174,6 +181,9 @@ public class CreateTimeActivity extends AppCompatActivity
             Toast.makeText(this.getApplicationContext(), "Alarm is null", Toast.LENGTH_SHORT).show();
         }
 
+        if(reminderToBeEdited != null){
+            deleteTimeReminder(reminderToBeEdited);
+        }
 
         //return to Home screen
         Intent goToMainScreen = new Intent(this, MainActivity.class);

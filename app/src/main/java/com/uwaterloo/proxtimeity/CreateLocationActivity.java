@@ -64,12 +64,12 @@ public class CreateLocationActivity extends AppCompatActivity
     private PendingIntent mGeofencePendingIntent;
     private ArrayList<Geofence> mGeofenceList = new ArrayList<>();
     private GeofencingClient mGeofencingClient;
-//    LatLng GeofenceLatLng1, GeofenceLatLng2;
 
     LatLng locationLatLng1, locationLatLng2;
     PlaceAutocompleteFragment autocompleteFragment;
     Place selectedPlace;
     LocationReminder reminderToBeEdited;
+    LocationReminder reminder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +98,6 @@ public class CreateLocationActivity extends AppCompatActivity
             dateSelectedText.setText(dateFormat.format(reminderToBeEdited.remindMeBefore.getTime()));
             String template = "hh:mm aaa";
             timeSelectedText.setText(DateFormat.format(template, reminderToBeEdited.remindMeBefore.getTime()));
-            deleteLocationReminder(reminderToBeEdited);
             reminderExpiryDateTime = reminderToBeEdited.remindMeBefore;
         }
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -223,6 +222,7 @@ public class CreateLocationActivity extends AppCompatActivity
         prefsEditor.putString("LocationReminders", newJson);
         prefsEditor.apply();
     }
+
     private GeofencingRequest getGeofencingRequest() {
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
         builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
@@ -238,7 +238,7 @@ public class CreateLocationActivity extends AppCompatActivity
         Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
         // calling addGeofences() and removeGeofences().
-        mGeofencePendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.
+        mGeofencePendingIntent = PendingIntent.getService(this, (int)reminder.reminderID, intent, PendingIntent.
                 FLAG_UPDATE_CURRENT);
         return mGeofencePendingIntent;
     }
@@ -247,29 +247,27 @@ public class CreateLocationActivity extends AppCompatActivity
         EditText edit = (EditText)findViewById(R.id.reminder_description);
         String description = edit.getText().toString();
 
+        if(reminderToBeEdited != null){
+            deleteLocationReminder(reminderToBeEdited);
+        }
+
         String selectedLocation = "";
 
         if (selectedPlace != null){
             selectedLocation = selectedPlace.getName().toString();
         }
         boolean isChecked = ((CheckBox) findViewById(R.id.check_store_hours)).isChecked();
-        LocationReminder reminder = new LocationReminder(description, selectedLocation ,isChecked, reminderExpiryDateTime);
+        reminder = new LocationReminder(description, selectedLocation ,isChecked, reminderExpiryDateTime);
 
         String json = mPrefs.getString("LocationReminders", "");
         Type type = new TypeToken<ArrayList<LocationReminder>>(){}.getType();
         Gson gson = new Gson();
         ArrayList<LocationReminder> LocationReminders = new ArrayList<>();
 
-
-//        Log.i("Type!", type.toString());
-//        Log.i("LocationReminderType!", LocationReminders.getClass().toString());
         if (gson.fromJson(json, type) != null)
             LocationReminders = gson.fromJson(json, type);
 
         LocationReminders.add(reminder);
-//        for (LocationReminder gd : LocationReminders) {
-//            Log.i("GEOFENCE!!!:", Boolean.toString(gd.remindDuringHours));
-//        }
 
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
         String newJson = gson.toJson(LocationReminders);
@@ -313,7 +311,7 @@ public class CreateLocationActivity extends AppCompatActivity
             final GeofenceData geofence = new GeofenceData();
 
             final UUID idOne = UUID.randomUUID();
-            final int radius = 2000;
+            final int radius = 1000;
             LatLng selectedLatLng = selectedPlace.getLatLng();
             mGeofenceList.add(new Geofence.Builder()
                     .setRequestId(idOne.toString())
@@ -334,19 +332,15 @@ public class CreateLocationActivity extends AppCompatActivity
             geofence.description = description;
 
             String oldGeofencesJson = mPrefs.getString("Geofences", "");
-//            Log.i("JSON GEOFENCE!", oldGeofencesJson);
+
             ArrayList<GeofenceData> geofences = new ArrayList<>();
             Type geofenceTypeArrayList = new TypeToken<ArrayList<GeofenceData>>(){}.getType();
-//            Log.i("GeofenceType", geofenceTypeArrayList.toString());
-//            Log.i("NEW GEOFENCE TYPE", geofences.getClass().toString());
 
             if (gson.fromJson(oldGeofencesJson, geofenceTypeArrayList) != null) {
                 geofences = gson.fromJson(oldGeofencesJson, geofenceTypeArrayList);
             }
             geofences.add(geofence);
-//            for (GeofenceData gd : geofences) {
-//                Log.i("GEOFENCE!!!:", gd.toString());
-//            }
+
             String newGeofenceJson = gson.toJson(geofences);
             prefsEditor.putString("Geofences", newGeofenceJson);
             prefsEditor.apply();
